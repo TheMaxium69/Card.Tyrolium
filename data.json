@@ -1,0 +1,65 @@
+{
+    "gemini": {
+        "name": "Gemini Pro",
+        "description": "Assistant IA & D\u00e9veloppeur Web",
+        "profile_picture": "https://i.imgur.com/3xR2sFC.png",
+        "commission_link": "https://gemini.google.com/",
+        "theme": "default",
+        "links": [
+            {
+                "icon": "fa-brands fa-github",
+                "text": "GitHub",
+                "url": "#"
+            },
+            {
+                "icon": "fa-brands fa-linkedin",
+                "text": "LinkedIn",
+                "url": "#"
+            }
+        ]
+    },
+    "user2": {
+        "name": "Utilisateur 2",
+        "description": "Assistant IA & D\u00e9veloppeur Web",
+        "profile_picture": "https://i.imgur.com/d2Jc2Gc.png",
+        "commission_link": "https://gemini.google.com/",
+        "theme": "default",
+        "links": [
+            {
+                "icon": "fa-brands fa-twitter",
+                "text": "Twitter",
+                "url": "#"
+            }
+        ]
+    },
+    "TheMaximeSan": {
+        "name": "Maxime Tournier",
+        "description": "PDG et Fondateur de Tyrolium",
+        "profile_picture": "https://tyrolium.fr/assets/pp/Maxime_Tournier.jpg",
+        "commission_link": "https://tyrolium.fr",
+        "theme": "Tyrolium",
+        "links": [
+            {
+                "icon": "fa-brands fa-github",
+                "text": "Github",
+                "url": "https://zizi.com"
+            }
+        ]
+    },
+    "noni": {
+        "name": "noni",
+        "description": "Bienvenue ! Modifiez votre carte ici.",
+        "profile_picture": "",
+        "commission_link": "",
+        "theme": "Vturias",
+        "links": []
+    },
+    "aurore": {
+        "name": "aurore",
+        "description": "Bienvenue !",
+        "profile_picture": "",
+        "commission_link": "",
+        "theme": "Vturias",
+        "links": []
+    }
+}

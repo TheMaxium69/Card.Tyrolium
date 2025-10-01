@@ -1,0 +1,38 @@
+{
+  "default": {
+    "--background-color": "#121828",
+    "--card-background": "#1E293B",
+    "--primary-text": "#F1F5F9",
+    "--link-background": "#334155",
+    "--link-text": "#E2E8F0",
+    "--link-hover": "#475569",
+    "--particles-color": "#475569",
+    "--commission-background": "#FBBF24",
+    "--commission-text": "#111827",
+    "--commission-hover": "#F59E0B"
+  },
+  "Tyrolium": {
+    "--background-color": "#131313",
+    "--card-background": "#222326",
+    "--primary-text": "#F9FAFB",
+    "--link-background": "#424242",
+    "--link-text": "#D1D5DB",
+    "--link-hover": "#4a4949",
+    "--particles-color": "#475569",
+    "--commission-background": "#0000FF",
+    "--commission-text": "#F9FAFB",
+    "--commission-hover": "#0000B3"
+  },
+  "Vturias": {
+    "--background-color": "#f1fafe",
+    "--card-background": "#FFFFFF",
+    "--primary-text": "#1E293B",
+    "--link-background": "#E0F2FE",
+    "--link-text": "#0EA5E9",
+    "--link-hover": "#BAE6FD",
+    "--particles-color": "#fd46a4",
+    "--commission-background": "#fd46a4",
+    "--commission-text": "#FFFFFF",
+    "--commission-hover": "#EC4899"
+  }
+}
