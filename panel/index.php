@@ -12,27 +12,8 @@ $current_user_role = $_SESSION['role'] ?? 'user';
 $current_username = $_SESSION['username'] ?? null;
 $current_project = $_SESSION['project'] ?? 'Tyrolium';
 
-if ($current_user_role === 'user' && (!isset($_GET['edit']) || $_GET['edit'] !== $current_username)) {
-    header('Location: index.php?edit=' . $current_username);
-    exit;
-}
-
 $success_message = '';
 $error_message = '';
-
-// --- LOGIQUE DE GESTION (Admin seulement) ---
-if ($current_user_role === 'admin') {
-    if (isset($_GET['delete'])) {
-        $data = get_data();
-        if (isset($data[$_GET['delete']])) { unset($data[$_GET['delete']]); save_data($data); header('Location: index.php?status=card_deleted'); exit; }
-    }
-    if (isset($_GET['delete_panel_user'])) {
-        $user_to_delete = $_GET['delete_panel_user'];
-        if ($user_to_delete === $current_username) { header('Location: index.php?status=self_delete_error'); exit; }
-        $panel_users = json_decode(file_get_contents('panel_users.json'), true);
-        if (isset($panel_users[$user_to_delete])) { unset($panel_users[$user_to_delete]); file_put_contents('panel_users.json', json_encode($panel_users, JSON_PRETTY_PRINT)); header('Location: index.php?status=panel_user_deleted'); exit; }
-    }
-}
 
 // --- LOGIQUE DE FORMULAIRES (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -40,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pseudo = trim($_POST['pseudo']);
         $is_update = isset($_POST['update_card']);
         if ($current_user_role === 'admin' || ($is_update && $current_user_role === 'user' && $pseudo === $current_username)) {
+            clearstatcache(); // Force PHP to clear file status cache
             $data = get_data();
             if (!$is_update && isset($data[$pseudo])) { $error_message = "Ce pseudo de carte existe déjà."; }
             else {
@@ -61,7 +43,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php?' . ($is_update ? 'edit='.$pseudo.'&' : '') . 'status=' . ($is_update ? 'card_updated' : 'card_created'));
                 exit;
             }
-        } else { $error_message = "Permission refusée."; }
+        } else { $error_message = "Permission refusée. Rôle: " . htmlspecialchars($current_user_role) . ", Pseudo carte: " . htmlspecialchars($pseudo) . ", Pseudo session: " . htmlspecialchars($current_username); }
+    }
+    if (isset($_POST['add_panel_user']) && $current_user_role === 'admin') {
+        $panel_users = json_decode(file_get_contents('panel_users.json'), true);
+        if (password_verify($_POST['admin_password_confirm'], $panel_users[$current_username]['password_hash'])) {
+            $new_username = trim($_POST['new_panel_username']);
+            if (empty($new_username) || empty($_POST['new_panel_password'])) { $error_message = "Le nom d'utilisateur et le mot de passe sont requis."; }
+            elseif (isset($panel_users[$new_username])) { $error_message = "Ce nom d'utilisateur existe déjà."; }
+            else {
+                $panel_users[$new_username] = ['password_hash' => password_hash($_POST['new_panel_password'], PASSWORD_DEFAULT), 'role' => $_POST['role'], 'project' => $_POST['project']];
+                file_put_contents('panel_users.json', json_encode($panel_users, JSON_PRETTY_PRINT));
+                if ($_POST['role'] === 'user' && !isset(get_data()[$new_username])) {
+                    $cards = get_data();
+                    $cards[$new_username] = ['name' => $new_username, 'description' => 'Bienvenue !', 'profile_picture' => '', 'commission_link' => '', 'theme' => 'default', 'links' => []];
+                    save_data($cards);
+                }
+                header('Location: index.php?status=panel_user_created');
+                exit;
+            }
+        }
+        else { $error_message = "Votre mot de passe admin est incorrect."; }
+    }
+}
+
+// --- GESTION DE L'ACCÈS UTILISATEUR (après la gestion POST pour ne pas bloquer la soumission)
+if ($current_user_role === 'user' && (!isset($_GET['edit']) || $_GET['edit'] !== $current_username)) {
+    header('Location: index.php?edit=' . $current_username);
+    exit;
+}
+
+// --- LOGIQUE DE GESTION (Admin seulement) ---
+if ($current_user_role === 'admin') {
+    if (isset($_GET['delete'])) {
+        $data = get_data();
+        if (isset($data[$_GET['delete']])) { unset($data[$_GET['delete']]); save_data($data); header('Location: index.php?status=card_deleted'); exit; }
+    }
+    if (isset($_GET['delete_panel_user'])) {
+        $user_to_delete = $_GET['delete_panel_user'];
+        if ($user_to_delete === $current_username) { header('Location: index.php?status=self_delete_error'); exit; }
+        $panel_users = json_decode(file_get_contents('panel_users.json'), true);
+        if (isset($panel_users[$user_to_delete])) { unset($panel_users[$user_to_delete]); file_put_contents('panel_users.json', json_encode($panel_users, JSON_PRETTY_PRINT)); header('Location: index.php?status=panel_user_deleted'); exit; }
+    }
+}
+
+// --- LOGIQUE DE FORMULAIRES (POST) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_card']) || isset($_POST['add_card'])) {
+        $pseudo = trim($_POST['pseudo']);
+        $is_update = isset($_POST['update_card']);
+        if ($current_user_role === 'admin' || ($is_update && $current_user_role === 'user' && $pseudo === $current_username)) {
+            clearstatcache(); // Force PHP to clear file status cache
+            $data = get_data();
+            if (!$is_update && isset($data[$pseudo])) { $error_message = "Ce pseudo de carte existe déjà."; }
+            else {
+                $data[$pseudo] = ['name' => $_POST['name']??'', 'description' => $_POST['description']??'', 'profile_picture' => $_POST['profile_picture']??'', 'commission_link' => $_POST['commission_link']??'', 'commission_text' => $_POST['commission_text']??'Commission', 'theme' => $_POST['theme']??'default', 'links' => []];
+                if (isset($_POST['links']) && is_array($_POST['links'])) {
+                    $socials = json_decode(file_get_contents('../socials.json'), true);
+                    foreach ($_POST['links'] as $link) {
+                        if (!empty($link['url']) && !empty($link['social']) && isset($socials[$link['social']])) {
+                            $social_data = $socials[$link['social']];
+                            $data[$pseudo]['links'][] = [
+                                'icon' => $social_data['icon'],
+                                'text' => $social_data['text'],
+                                'url' => $link['url']
+                            ];
+                        }
+                    }
+                }
+                save_data($data);
+                header('Location: index.php?' . ($is_update ? 'edit='.$pseudo.'&' : '') . 'status=' . ($is_update ? 'card_updated' : 'card_created'));
+                exit;
+            }
+        } else { $error_message = "Permission refusée. Rôle: " . htmlspecialchars($current_user_role) . ", Pseudo carte: " . htmlspecialchars($pseudo) . ", Pseudo session: " . htmlspecialchars($current_username); }
     }
     if (isset($_POST['add_panel_user']) && $current_user_role === 'admin') {
         $panel_users = json_decode(file_get_contents('panel_users.json'), true);
