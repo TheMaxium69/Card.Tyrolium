@@ -45,6 +45,30 @@ if (empty($themes)) {
     <meta name="googlebot" content="noindex, nofollow">
     <meta name="bingbot" content="noindex, nofollow">
 
+
+    <meta name="title" content="<?php if ($user_data) {
+        echo htmlspecialchars($user_data['name']);
+    } else {
+        echo 'Card.Tyrolium';
+    } ?>">
+    <meta name="description" content="<?php if ($user_data) {
+        echo htmlspecialchars($user_data['description']);
+    } else {
+        echo 'Site pour les cards des membres de l\'entreprise Tyrolium';
+    } ?>"/>
+    <meta property="og:title" content="<?php if ($user_data) {
+        echo htmlspecialchars($user_data['name']);
+    } else {
+        echo 'Card.Tyrolium';
+    } ?>"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url"
+          content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>"/>
+    <meta property="og:image"
+          content="<?php echo isset($user_data['profile_picture']) ? htmlspecialchars($user_data['profile_picture']) : 'https://tyrolium.fr/Contenu/Image/Tyrolium Site.png'; ?>"/>
+
+
+
     <title><?php if ($user_data) { echo htmlspecialchars($user_data['name']) . ' - Card'; } else { echo 'Card.Tyrolium'; } ?></title>
 
     <link rel="icon"
