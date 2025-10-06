@@ -41,8 +41,13 @@
         "links": [
             {
                 "icon": "fa-brands fa-github",
-                "text": "Github",
-                "url": "https://zizi.com"
+                "text": "GitHub",
+                "url": "https://github.com/TheMaxium69"
+            },
+            {
+                "icon": "fa-brands fa-linkedin",
+                "text": "LinkedIn",
+                "url": "https://www.linkedin.com/in/maxime-tournier-tyrolium/"
             }
         ]
     },

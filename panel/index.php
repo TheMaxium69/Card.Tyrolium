@@ -44,7 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$is_update && isset($data[$pseudo])) { $error_message = "Ce pseudo de carte existe déjà."; }
             else {
                 $data[$pseudo] = ['name' => $_POST['name']??'', 'description' => $_POST['description']??'', 'profile_picture' => $_POST['profile_picture']??'', 'commission_link' => $_POST['commission_link']??'', 'theme' => $_POST['theme']??'default', 'links' => []];
-                if (isset($_POST['links']) && is_array($_POST['links'])) { foreach ($_POST['links'] as $link) { if (!empty($link['url'])) { $data[$pseudo]['links'][] = $link; } } }
+                if (isset($_POST['links']) && is_array($_POST['links'])) {
+                    $socials = json_decode(file_get_contents('../socials.json'), true);
+                    foreach ($_POST['links'] as $link) {
+                        if (!empty($link['url']) && !empty($link['social']) && isset($socials[$link['social']])) {
+                            $social_data = $socials[$link['social']];
+                            $data[$pseudo]['links'][] = [
+                                'icon' => $social_data['icon'],
+                                'text' => $social_data['text'],
+                                'url' => $link['url']
+                            ];
+                        }
+                    }
+                }
                 save_data($data);
                 header('Location: index.php?' . ($is_update ? 'edit='.$pseudo.'&' : '') . 'status=' . ($is_update ? 'card_updated' : 'card_created'));
                 exit;
@@ -128,9 +140,28 @@ $domain = ($current_project === 'Vturias') ? 'card.vturias.fr' : 'card.tyrolium.
             <form action="index.php" method="post"><input type="hidden" name="pseudo" value="<?= htmlspecialchars($_GET['edit']) ?>"><div class="form-grid"><div class="form-group"><label>Pseudo</label><input type="text" value="<?= htmlspecialchars($_GET['edit']) ?>" disabled></div><div class="form-group"><label for="name">Nom</label><input type="text" id="name" name="name" value="<?= htmlspecialchars($card_to_edit['name']) ?>" required></div><div class="form-group full-width"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($card_to_edit['description']) ?></textarea></div><div class="form-group"><label for="profile_picture">URL Photo</label><input type="text" id="profile_picture" name="profile_picture" value="<?= htmlspecialchars($card_to_edit['profile_picture']) ?>"></div><div class="form-group"><label for="commission_link">Lien Commission</label><input type="text" id="commission_link" name="commission_link" value="<?= htmlspecialchars($card_to_edit['commission_link']) ?>"></div><div class="form-group"><label for="theme">Thème</label><select id="theme" name="theme">
                 <?php foreach ($themes as $theme_name => $theme_data): ?><option value="<?= htmlspecialchars($theme_name) ?>" <?= ($card_to_edit['theme'] ?? 'default') === $theme_name ? 'selected' : '' ?>><?= ucfirst(htmlspecialchars($theme_name)) ?></option><?php endforeach; ?>
             </select></div></div><div class="links-section"><h3>Liens</h3><div id="links-container">
-                <?php if(isset($card_to_edit['links'])) { foreach($card_to_edit['links'] as $i => $link): ?><div class="link-row"><input type="text" name="links[<?= $i ?>][icon]" placeholder="Icone (ex: fa-brands fa-twitter)" value="<?= htmlspecialchars($link['icon']) ?>"><input type="text" name="links[<?= $i ?>][text]" placeholder="Texte" value="<?= htmlspecialchars($link['text']) ?>" required><input type="text" name="links[<?= $i ?>][url]" placeholder="URL" value="<?= htmlspecialchars($link['url']) ?>" required><button type="button" class="btn-delete-link" onclick="this.parentElement.remove()">X</button></div><?php endforeach; } ?>
-            </div><button type="button" id="add-link-btn">+ Ajouter un lien</button></div><button type="submit" name="update_card" class="btn-submit">Mettre à jour</button></form>
-        </section>
+    <?php 
+    $socials = json_decode(file_get_contents('../socials.json'), true);
+    if(isset($card_to_edit['links'])) { 
+        foreach($card_to_edit['links'] as $i => $link): 
+    ?>
+    <div class="link-row">
+        <select name="links[<?= $i ?>][social]" onchange="updateLink(this, <?= $i ?>)">
+            <?php foreach($socials as $name => $details): ?>
+                <option value="<?= htmlspecialchars($name) ?>" <?= ($link['text'] == $name) ? 'selected' : '' ?>><?= htmlspecialchars($name) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <input type="hidden" name="links[<?= $i ?>][icon]" value="<?= htmlspecialchars($link['icon']) ?>">
+        <input type="hidden" name="links[<?= $i ?>][text]" value="<?= htmlspecialchars($link['text']) ?>">
+        <input type="text" name="links[<?= $i ?>][url]" placeholder="URL" value="<?= htmlspecialchars($link['url']) ?>" required>
+        <button type="button" class="btn-delete-link" onclick="this.parentElement.remove()">X</button>
+    </div>
+    <?php 
+        endforeach; 
+    } 
+    ?>
+</div><button type="button" id="add-link-btn">+ Ajouter un lien</button></div><button type="submit" name="update_card" class="btn-submit">Mettre à jour</button></form>
+</section>
         <?php elseif ($current_user_role === 'admin'): /* VUE ADMIN */ ?>
         <section class="card-ui"><h2>Gestion des Cartes</h2><div class="table-wrapper"><table><thead><tr><th>Pseudo</th><th>Nom</th><th>Thème</th><th>Actions</th></tr></thead><tbody>
             <?php foreach ($cards as $pseudo => $card): ?><tr><td><?= htmlspecialchars($pseudo) ?></td><td><?= htmlspecialchars($card['name']) ?></td><td><?= htmlspecialchars($card['theme'] ?? 'default') ?></td><td class="actions"><a href="index.php?edit=<?= htmlspecialchars($pseudo) ?>" class="btn-edit">Éditer</a><a href="https://card.tyrolium.fr/?u=<?= htmlspecialchars($pseudo) ?>" class="btn-view" target="_blank">Voir</a><a href="index.php?delete=<?= htmlspecialchars($pseudo) ?>" class="btn-delete" onclick="return confirm('Supprimer cette carte ?')">Supprimer</a></td></tr><?php endforeach; ?>
@@ -154,7 +185,44 @@ $domain = ($current_project === 'Vturias') ? 'card.vturias.fr' : 'card.tyrolium.
         });
     }
 
-    function setupAddLink(c,b){const a=document.getElementById(b);if(!a)return;a.addEventListener("click",function(){const d=document.getElementById(c),e=Date.now(),f=`<div class="link-row"><input type="text" name="links[${e}][icon]" placeholder="Icone" value=""><input type="text" name="links[${e}][text]" placeholder="Texte" required><input type="text" name="links[${e}][url]" placeholder="URL" required><button type="button" class="btn-delete-link" onclick="this.parentElement.remove()">X</button></div>`;d.insertAdjacentHTML("beforeend",f)})}setupAddLink("links-container","add-link-btn");
+        const socials = <?php echo json_encode($socials); ?>;
+
+    function updateLink(selectElement, index) {
+        const selectedSocial = selectElement.value;
+        const social = socials[selectedSocial];
+        const linkRow = selectElement.parentElement;
+        linkRow.querySelector(`input[name='links[${index}][icon]']`).value = social.icon;
+        linkRow.querySelector(`input[name='links[${index}][text]']`).value = social.text;
+    }
+
+    function setupAddLink(containerId, buttonId) {
+        const addButton = document.getElementById(buttonId);
+        if (!addButton) return;
+
+        addButton.addEventListener("click", function() {
+            const container = document.getElementById(containerId);
+            const index = Date.now();
+            let options = '';
+            for (const socialName in socials) {
+                options += `<option value="${socialName}">${socialName}</option>`;
+            }
+
+            const newLinkRowHTML = `
+                <div class="link-row">
+                    <select name="links[${index}][social]" onchange="updateLink(this, ${index})">
+                        ${options}
+                    </select>
+                    <input type="hidden" name="links[${index}][icon]" value="${socials[Object.keys(socials)[0]].icon}">
+                    <input type="hidden" name="links[${index}][text]" value="${socials[Object.keys(socials)[0]].text}">
+                    <input type="text" name="links[${index}][url]" placeholder="URL" required>
+                    <button type="button" class="btn-delete-link" onclick="this.parentElement.remove()">X</button>
+                </div>
+            `;
+            container.insertAdjacentHTML("beforeend", newLinkRowHTML);
+        });
+    }
+
+    setupAddLink("links-container", "add-link-btn");
 </script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script src="../script.js"></script>

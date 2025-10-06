@@ -1,0 +1,39 @@
+
+{
+    "GitHub": {
+        "icon": "fa-brands fa-github",
+        "text": "GitHub"
+    },
+    "LinkedIn": {
+        "icon": "fa-brands fa-linkedin",
+        "text": "LinkedIn"
+    },
+    "Twitter": {
+        "icon": "fa-brands fa-twitter",
+        "text": "Twitter"
+    },
+    "Discord": {
+        "icon": "fa-brands fa-discord",
+        "text": "Discord"
+    },
+    "Twitch": {
+        "icon": "fa-brands fa-twitch",
+        "text": "Twitch"
+    },
+    "YouTube": {
+        "icon": "fa-brands fa-youtube",
+        "text": "YouTube"
+    },
+    "Instagram": {
+        "icon": "fa-brands fa-instagram",
+        "text": "Instagram"
+    },
+    "Facebook": {
+        "icon": "fa-brands fa-facebook",
+        "text": "Facebook"
+    },
+    "Site Web": {
+        "icon": "fa-solid fa-globe",
+        "text": "Site Web"
+    }
+}
