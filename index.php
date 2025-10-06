@@ -26,7 +26,7 @@ if ($username) {
         $error_message = "L'utilisateur '" . htmlspecialchars($username) . "' n'a pas été trouvé.";
     }
 } else {
-    $error_message = "Veuillez spécifier un utilisateur (ex: ?u=maxime).";
+    $error_message = "Veuillez spécifier un utilisateur (ex: ?u=maxime)";
 }
 
 if (empty($themes)) {
@@ -46,7 +46,11 @@ if (empty($themes)) {
     <meta name="bingbot" content="noindex, nofollow">
 
     <title><?php if ($user_data) { echo htmlspecialchars($user_data['name']) . ' - Card'; } else { echo 'Card.Tyrolium'; } ?></title>
-    
+
+    <link rel="icon"
+          href="<?php echo isset($user_data['profile_picture']) ? htmlspecialchars($user_data['profile_picture']) : 'https://tyrolium.fr/Contenu/Image/Tyrolium Site.png'; ?>">
+
+
     <!-- Injection dynamique des variables de couleur du thème -->
     <style>
         :root {
