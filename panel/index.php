@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = get_data();
             if (!$is_update && isset($data[$pseudo])) { $error_message = "Ce pseudo de carte existe déjà."; }
             else {
-                $data[$pseudo] = ['name' => $_POST['name']??'', 'description' => $_POST['description']??'', 'profile_picture' => $_POST['profile_picture']??'', 'commission_link' => $_POST['commission_link']??'', 'theme' => $_POST['theme']??'default', 'links' => []];
+                $data[$pseudo] = ['name' => $_POST['name']??'', 'description' => $_POST['description']??'', 'profile_picture' => $_POST['profile_picture']??'', 'commission_link' => $_POST['commission_link']??'', 'commission_text' => $_POST['commission_text']??'Commission', 'theme' => $_POST['theme']??'default', 'links' => []];
                 if (isset($_POST['links']) && is_array($_POST['links'])) {
                     $socials = json_decode(file_get_contents('../socials.json'), true);
                     foreach ($_POST['links'] as $link) {
@@ -137,9 +137,22 @@ $domain = ($current_project === 'Vturias') ? 'card.vturias.fr' : 'card.tyrolium.
         <?php if ($edit_mode && $card_to_edit): /* VUE ÉDITION */ ?>
         <section class="card-ui">
             <div class="card-header"><h2>Édition de la carte : <?= htmlspecialchars($_GET['edit']) ?></h2><?php if ($current_user_role === 'admin'): ?><a href="index.php">Retour</a><?php endif; ?></div>
-            <form action="index.php" method="post"><input type="hidden" name="pseudo" value="<?= htmlspecialchars($_GET['edit']) ?>"><div class="form-grid"><div class="form-group"><label>Pseudo</label><input type="text" value="<?= htmlspecialchars($_GET['edit']) ?>" disabled></div><div class="form-group"><label for="name">Nom</label><input type="text" id="name" name="name" value="<?= htmlspecialchars($card_to_edit['name']) ?>" required></div><div class="form-group full-width"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($card_to_edit['description']) ?></textarea></div><div class="form-group"><label for="profile_picture">URL Photo</label><input type="text" id="profile_picture" name="profile_picture" value="<?= htmlspecialchars($card_to_edit['profile_picture']) ?>"></div><div class="form-group"><label for="commission_link">Lien Commission</label><input type="text" id="commission_link" name="commission_link" value="<?= htmlspecialchars($card_to_edit['commission_link']) ?>"></div><div class="form-group"><label for="theme">Thème</label><select id="theme" name="theme">
-                <?php foreach ($themes as $theme_name => $theme_data): ?><option value="<?= htmlspecialchars($theme_name) ?>" <?= ($card_to_edit['theme'] ?? 'default') === $theme_name ? 'selected' : '' ?>><?= ucfirst(htmlspecialchars($theme_name)) ?></option><?php endforeach; ?>
-            </select></div></div><div class="links-section"><h3>Liens</h3><div id="links-container">
+            <form action="index.php" method="post"><input type="hidden" name="pseudo" value="<?= htmlspecialchars($_GET['edit']) ?>"><div class="form-grid">
+                <div class="form-group"><label>Pseudo</label><input type="text" value="<?= htmlspecialchars($_GET['edit']) ?>" disabled></div>
+                <div class="form-group"><label for="name">Nom</label><input type="text" id="name" name="name" value="<?= htmlspecialchars($card_to_edit['name']) ?>" required></div>
+                <div class="form-group full-width"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($card_to_edit['description']) ?></textarea></div>
+                <div class="form-group"><label for="profile_picture">URL Photo</label><input type="text" id="profile_picture" name="profile_picture" value="<?= htmlspecialchars($card_to_edit['profile_picture']) ?>"></div>
+                <div class="form-group"><label for="theme">Thème</label><select id="theme" name="theme">
+                    <?php foreach ($themes as $theme_name => $theme_data): ?><option value="<?= htmlspecialchars($theme_name) ?>" <?= ($card_to_edit['theme'] ?? 'default') === $theme_name ? 'selected' : '' ?>><?= ucfirst(htmlspecialchars($theme_name)) ?></option><?php endforeach; ?>
+                </select></div>
+            </div>
+            <fieldset class="form-fieldset">
+                <legend>Bouton Important</legend>
+                <div class="form-grid">
+                    <div class="form-group"><label for="commission_link">Lien</label><input type="text" id="commission_link" name="commission_link" value="<?= htmlspecialchars($card_to_edit['commission_link']) ?>"></div>
+                    <div class="form-group"><label for="commission_text">Texte</label><input type="text" id="commission_text" name="commission_text" value="<?= htmlspecialchars($card_to_edit['commission_text'] ?? 'Commission') ?>"></div>
+                </div>
+            </fieldset><div class="links-section"><h3>Liens</h3><div id="links-container">
     <?php 
     $socials = json_decode(file_get_contents('../socials.json'), true);
     if(isset($card_to_edit['links'])) { 

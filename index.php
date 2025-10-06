@@ -75,7 +75,7 @@ if (empty($themes)) {
             <?php if (!empty($user_data['commission_link'])): ?>
                 <a href="<?= htmlspecialchars($user_data['commission_link']) ?>" target="_blank" class="link commission">
                     <i class="fa-solid fa-star"></i>
-                    <span>Commission</span>
+                    <span><?= htmlspecialchars($user_data['commission_text'] ?? 'Commission') ?></span>
                 </a>
             <?php endif; ?>
 
