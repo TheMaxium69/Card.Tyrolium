@@ -8,9 +8,9 @@
         "icon": "fa-brands fa-linkedin",
         "text": "LinkedIn"
     },
-    "Twitter": {
-        "icon": "fa-brands fa-twitter",
-        "text": "Twitter"
+    "X": {
+        "icon": "fa-brands fa-x-twitter",
+        "text": "X"
     },
     "Discord": {
         "icon": "fa-brands fa-discord",
@@ -27,6 +27,22 @@
     "Instagram": {
         "icon": "fa-brands fa-instagram",
         "text": "Instagram"
+    },
+    "Tiktok": {
+        "icon": "fa-brands fa-tiktok",
+        "text": "Tiktok"
+    },
+    "Pinterest": {
+        "icon": "fa-brands fa-pinterest-p",
+        "text": "Pinterest"
+    },
+    "Reddit": {
+        "icon": "fa-brands fa-reddit",
+        "text": "Reddit"
+    },
+    "Bluesky": {
+        "icon": "fa-brands fa-bluesky",
+        "text": "Bluesky"
     },
     "Facebook": {
         "icon": "fa-brands fa-facebook",
