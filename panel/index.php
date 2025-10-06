@@ -189,6 +189,7 @@ $domain = ($current_project === 'Vturias') ? 'card.vturias.fr' : 'card.tyrolium.
             <div class="share-input-wrapper">
                 <input type="text" id="share-url" value="https://<?= $domain ?>/?u=<?= htmlspecialchars($current_username) ?>" readonly>
                 <button id="copy-btn" title="Copier dans le presse-papier"><i class="fa-regular fa-copy"></i></button>
+                <a href="https://<?= $domain ?>/?u=<?= htmlspecialchars($current_username) ?>" target="_blank" id="view-btn" title="Ouvrir le lien"><i class="fa-solid fa-eye"></i></a>
             </div>
         </section>
         <?php endif; ?>
