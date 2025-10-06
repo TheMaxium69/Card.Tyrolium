@@ -26,7 +26,7 @@ if ($username) {
         $error_message = "L'utilisateur '" . htmlspecialchars($username) . "' n'a pas été trouvé.";
     }
 } else {
-    $error_message = "Veuillez spécifier un utilisateur (ex: ?u=gemini).";
+    $error_message = "Veuillez spécifier un utilisateur (ex: ?u=maxime).";
 }
 
 if (empty($themes)) {
@@ -40,7 +40,12 @@ if (empty($themes)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carte de Visite<?php if ($user_data) { echo ' - ' . htmlspecialchars($user_data['name']); } ?></title>
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+
+    <title><?php if ($user_data) { echo htmlspecialchars($user_data['name']) . ' - Card'; } else { echo 'Card.Tyrolium'; } ?></title>
     
     <!-- Injection dynamique des variables de couleur du thème -->
     <style>
@@ -90,7 +95,7 @@ if (empty($themes)) {
 
     <?php else: ?>
     <div class="card">
-        <h1 class="name">Erreur</h1>
+        <h1 class="name">Card.Tyrolium</h1>
         <p class="description"><?= $error_message ?></p>
     </div>
     <?php endif; ?>

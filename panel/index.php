@@ -114,7 +114,12 @@ $domain = ($current_project === 'Vturias') ? 'card.vturias.fr' : 'card.tyrolium.
 
 ?>
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://tyrolium.fr/Contenu/Image/Tyrolium Site.png" rel="shortcut icon"><title><?= $edit_mode ? 'Éditer une carte' : 'Dashboard' ?> - Card.Tyrolium</title>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="bingbot" content="noindex, nofollow">
+
+    <link href="https://tyrolium.fr/Contenu/Image/Tyrolium Site.png" rel="shortcut icon"><title><?= $edit_mode ? 'Éditer une carte' : 'Dashboard' ?> - Card.Tyrolium</title>
 <style>:root { <?php foreach ($default_theme as $var => $color) { echo htmlspecialchars($var) . ':' . htmlspecialchars($color) . ';'; } ?> }</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 <link rel="stylesheet" href="style.css"></head><body>
