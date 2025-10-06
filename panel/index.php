@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php?' . ($is_update ? 'edit='.$pseudo.'&' : '') . 'status=' . ($is_update ? 'card_updated' : 'card_created'));
                 exit;
             }
-        } else { $error_message = "Permission refusée. Rôle: " . htmlspecialchars($current_user_role) . ", Pseudo carte: " . htmlspecialchars($pseudo) . ", Pseudo session: " . htmlspecialchars($current_username); }
+        } else { $error_message = "Permission refusée."; }
     }
     if (isset($_POST['add_panel_user']) && $current_user_role === 'admin') {
         $panel_users = json_decode(file_get_contents('panel_users.json'), true);
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php?' . ($is_update ? 'edit='.$pseudo.'&' : '') . 'status=' . ($is_update ? 'card_updated' : 'card_created'));
                 exit;
             }
-        } else { $error_message = "Permission refusée. Rôle: " . htmlspecialchars($current_user_role) . ", Pseudo carte: " . htmlspecialchars($pseudo) . ", Pseudo session: " . htmlspecialchars($current_username); }
+        } else { $error_message = "Permission refusée."; }
     }
     if (isset($_POST['add_panel_user']) && $current_user_role === 'admin') {
         $panel_users = json_decode(file_get_contents('panel_users.json'), true);
