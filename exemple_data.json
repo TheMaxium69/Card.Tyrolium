@@ -1,0 +1,22 @@
+{
+    "TheMaximeSan": {
+        "name": "Maxime Tournier",
+        "description": "PDG et Fondateur de Tyrolium",
+        "profile_picture": "https://tyrolium.fr/assets/pp/Maxime_Tournier.jpg",
+        "commission_link": "https://tyrolium.fr",
+        "commission_text": "Site Web",
+        "theme": "Tyrolium",
+        "links": [
+            {
+                "icon": "fa-brands fa-github",
+                "text": "GitHub",
+                "url": "https://github.com/TheMaxium69"
+            },
+            {
+                "icon": "fa-brands fa-linkedin",
+                "text": "LinkedIn",
+                "url": "https://www.linkedin.com/in/maxime-tournier-tyrolium/"
+            }
+        ]
+    }
+}

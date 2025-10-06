@@ -1,0 +1,7 @@
+{
+  "admin": {
+        "password_hash": "$2y$10$uZoPdoFeTIy7E8A0CF1otuGv287B08b6Z8V9OQoo3pnFz1G4L7IFC",
+        "role": "admin",
+        "project": "Tyrolium"
+  }
+}
